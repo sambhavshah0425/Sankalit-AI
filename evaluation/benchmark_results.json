@@ -1,0 +1,399 @@
+{
+  "timestamp": "2026-11-13T11:04:50Z",
+  "duration_seconds": 0.01,
+  "query_classification": {
+    "total_queries": 37,
+    "correct_categories": 37,
+    "category_accuracy_pct": 100.0,
+    "correct_domains": 37,
+    "domain_accuracy_pct": 100.0,
+    "details": [
+      {
+        "id": "comp_01",
+        "query": "What does Sankalit Consultant do?",
+        "expected_category": "COMPANY_SPECIFIC",
+        "actual_category": "COMPANY_SPECIFIC",
+        "category_match": true,
+        "expected_domain": "company-profile",
+        "actual_domain": "company-profile",
+        "domain_match": true
+      },
+      {
+        "id": "comp_02",
+        "query": "What is the mission and vision of Sankalit?",
+        "expected_category": "COMPANY_SPECIFIC",
+        "actual_category": "COMPANY_SPECIFIC",
+        "category_match": true,
+        "expected_domain": "company-profile",
+        "actual_domain": "company-profile",
+        "domain_match": true
+      },
+      {
+        "id": "comp_03",
+        "query": "Who are we and what are our primary consulting services?",
+        "expected_category": "COMPANY_SPECIFIC",
+        "actual_category": "COMPANY_SPECIFIC",
+        "category_match": true,
+        "expected_domain": "company-profile",
+        "actual_domain": "company-profile",
+        "domain_match": true
+      },
+      {
+        "id": "comp_04",
+        "query": "Tell me about the history and background of Sankalit Consultant.",
+        "expected_category": "COMPANY_SPECIFIC",
+        "actual_category": "COMPANY_SPECIFIC",
+        "category_match": true,
+        "expected_domain": "company-profile",
+        "actual_domain": "company-profile",
+        "domain_match": true
+      },
+      {
+        "id": "comp_05",
+        "query": "What engineering disciplines are included in Sankalit's core practice areas?",
+        "expected_category": "COMPANY_SPECIFIC",
+        "actual_category": "COMPANY_SPECIFIC",
+        "category_match": true,
+        "expected_domain": "company-profile",
+        "actual_domain": "company-profile",
+        "domain_match": true
+      },
+      {
+        "id": "acoust_01",
+        "query": "What are the reverberation time RT60 targets for our auditorium designs?",
+        "expected_category": "DEPARTMENT_SPECIFIC",
+        "actual_category": "DEPARTMENT_SPECIFIC",
+        "category_match": true,
+        "expected_domain": "acoustic",
+        "actual_domain": "acoustic",
+        "domain_match": true
+      },
+      {
+        "id": "acoust_02",
+        "query": "Explain our sound isolation and STC partition ratings standard.",
+        "expected_category": "DEPARTMENT_SPECIFIC",
+        "actual_category": "DEPARTMENT_SPECIFIC",
+        "category_match": true,
+        "expected_domain": "acoustic",
+        "actual_domain": "acoustic",
+        "domain_match": true
+      },
+      {
+        "id": "acoust_03",
+        "query": "What noise and vibration control criteria do we apply to mechanical plant rooms?",
+        "expected_category": "DEPARTMENT_SPECIFIC",
+        "actual_category": "DEPARTMENT_SPECIFIC",
+        "category_match": true,
+        "expected_domain": "acoustic",
+        "actual_domain": "acoustic",
+        "domain_match": true
+      },
+      {
+        "id": "acoust_04",
+        "query": "How do we integrate audio-visual systems with architectural acoustics in concert halls?",
+        "expected_category": "DEPARTMENT_SPECIFIC",
+        "actual_category": "DEPARTMENT_SPECIFIC",
+        "category_match": true,
+        "expected_domain": "acoustic",
+        "actual_domain": "acoustic",
+        "domain_match": true
+      },
+      {
+        "id": "air_01",
+        "query": "Explain our airport systems architecture for baggage handling systems and BHS tracking.",
+        "expected_category": "DEPARTMENT_SPECIFIC",
+        "actual_category": "DEPARTMENT_SPECIFIC",
+        "category_match": true,
+        "expected_domain": "airport-systems",
+        "actual_domain": "airport-systems",
+        "domain_match": true
+      },
+      {
+        "id": "air_02",
+        "query": "What are the master system integration guidelines for airport AODB and FIDS displays?",
+        "expected_category": "DEPARTMENT_SPECIFIC",
+        "actual_category": "DEPARTMENT_SPECIFIC",
+        "category_match": true,
+        "expected_domain": "airport-systems",
+        "actual_domain": "airport-systems",
+        "domain_match": true
+      },
+      {
+        "id": "air_03",
+        "query": "How are airport terminal access control and security screening networks separated?",
+        "expected_category": "DEPARTMENT_SPECIFIC",
+        "actual_category": "DEPARTMENT_SPECIFIC",
+        "category_match": true,
+        "expected_domain": "airport-systems",
+        "actual_domain": "airport-systems",
+        "domain_match": true
+      },
+      {
+        "id": "it_01",
+        "query": "What are our enterprise network switch and structured cabling standards?",
+        "expected_category": "DEPARTMENT_SPECIFIC",
+        "actual_category": "DEPARTMENT_SPECIFIC",
+        "category_match": true,
+        "expected_domain": "it",
+        "actual_domain": "it",
+        "domain_match": true
+      },
+      {
+        "id": "it_02",
+        "query": "Explain our cybersecurity policy regarding server firewall rules and encryption.",
+        "expected_category": "DEPARTMENT_SPECIFIC",
+        "actual_category": "DEPARTMENT_SPECIFIC",
+        "category_match": true,
+        "expected_domain": "it",
+        "actual_domain": "it",
+        "domain_match": true
+      },
+      {
+        "id": "it_03",
+        "query": "What are the IT helpdesk support procedures for software license provisioning?",
+        "expected_category": "DEPARTMENT_SPECIFIC",
+        "actual_category": "DEPARTMENT_SPECIFIC",
+        "category_match": true,
+        "expected_domain": "it",
+        "actual_domain": "it",
+        "domain_match": true
+      },
+      {
+        "id": "light_01",
+        "query": "What are our architectural lighting design guidelines for indoor office lux levels?",
+        "expected_category": "DEPARTMENT_SPECIFIC",
+        "actual_category": "DEPARTMENT_SPECIFIC",
+        "category_match": true,
+        "expected_domain": "lighting",
+        "actual_domain": "lighting",
+        "domain_match": true
+      },
+      {
+        "id": "light_02",
+        "query": "How do we specify DALI and DMX lighting control systems in our technical specifications?",
+        "expected_category": "DEPARTMENT_SPECIFIC",
+        "actual_category": "DEPARTMENT_SPECIFIC",
+        "category_match": true,
+        "expected_domain": "lighting",
+        "actual_domain": "lighting",
+        "domain_match": true
+      },
+      {
+        "id": "light_03",
+        "query": "What are the lux and glare index limits for exterior facade lighting?",
+        "expected_category": "DEPARTMENT_SPECIFIC",
+        "actual_category": "DEPARTMENT_SPECIFIC",
+        "category_match": true,
+        "expected_domain": "lighting",
+        "actual_domain": "lighting",
+        "domain_match": true
+      },
+      {
+        "id": "mep_01",
+        "query": "What are our HVAC chiller plant efficiency and ductwork design standards?",
+        "expected_category": "DEPARTMENT_SPECIFIC",
+        "actual_category": "DEPARTMENT_SPECIFIC",
+        "category_match": true,
+        "expected_domain": "mep",
+        "actual_domain": "mep",
+        "domain_match": true
+      },
+      {
+        "id": "mep_02",
+        "query": "Explain our electrical substation power distribution and transformer sizing methodology.",
+        "expected_category": "DEPARTMENT_SPECIFIC",
+        "actual_category": "DEPARTMENT_SPECIFIC",
+        "category_match": true,
+        "expected_domain": "mep",
+        "actual_domain": "mep",
+        "domain_match": true
+      },
+      {
+        "id": "mep_03",
+        "query": "What are the fire protection sprinkler density requirements under our MEP specifications?",
+        "expected_category": "DEPARTMENT_SPECIFIC",
+        "actual_category": "DEPARTMENT_SPECIFIC",
+        "category_match": true,
+        "expected_domain": "mep",
+        "actual_domain": "mep",
+        "domain_match": true
+      },
+      {
+        "id": "hr_01",
+        "query": "What is our company annual leave and sick leave accrual policy?",
+        "expected_category": "HR_POLICY",
+        "actual_category": "HR_POLICY",
+        "category_match": true,
+        "expected_domain": "hr",
+        "actual_domain": "hr",
+        "domain_match": true
+      },
+      {
+        "id": "hr_02",
+        "query": "How long is the employee probation period and how is the appraisal conducted?",
+        "expected_category": "HR_POLICY",
+        "actual_category": "HR_POLICY",
+        "category_match": true,
+        "expected_domain": "hr",
+        "actual_domain": "hr",
+        "domain_match": true
+      },
+      {
+        "id": "hr_03",
+        "query": "What are the POSH guidelines and grievance redressal steps in our employee handbook?",
+        "expected_category": "HR_POLICY",
+        "actual_category": "HR_POLICY",
+        "category_match": true,
+        "expected_domain": "hr",
+        "actual_domain": "hr",
+        "domain_match": true
+      },
+      {
+        "id": "proj_01",
+        "query": "Where can I find the Bill of Quantities BOQ and technical proposal for Project Horizon?",
+        "expected_category": "PROJECT_SPECIFIC",
+        "actual_category": "PROJECT_SPECIFIC",
+        "category_match": true,
+        "expected_domain": "projects",
+        "actual_domain": "projects",
+        "domain_match": true
+      },
+      {
+        "id": "proj_02",
+        "query": "What is the status of the tender submission for the Airport Terminal RFP?",
+        "expected_category": "PROJECT_SPECIFIC",
+        "actual_category": "PROJECT_SPECIFIC",
+        "category_match": true,
+        "expected_domain": "projects",
+        "actual_domain": "projects",
+        "domain_match": true
+      },
+      {
+        "id": "proj_03",
+        "query": "Review the progress report and client deliverable schedule for Metro Station design.",
+        "expected_category": "PROJECT_SPECIFIC",
+        "actual_category": "PROJECT_SPECIFIC",
+        "category_match": true,
+        "expected_domain": "projects",
+        "actual_domain": "projects",
+        "domain_match": true
+      },
+      {
+        "id": "ops_01",
+        "query": "What is our standard procurement SOP for capital equipment and vendor onboarding?",
+        "expected_category": "OPERATIONS",
+        "actual_category": "OPERATIONS",
+        "category_match": true,
+        "expected_domain": "operations",
+        "actual_domain": "operations",
+        "domain_match": true
+      },
+      {
+        "id": "ops_02",
+        "query": "What are the rules for purchase order approval in internal administrative workflows?",
+        "expected_category": "OPERATIONS",
+        "actual_category": "OPERATIONS",
+        "category_match": true,
+        "expected_domain": "operations",
+        "actual_domain": "operations",
+        "domain_match": true
+      },
+      {
+        "id": "ops_03",
+        "query": "Explain the document control, file naming, and archiving standards for engineering deliverables.",
+        "expected_category": "OPERATIONS",
+        "actual_category": "OPERATIONS",
+        "category_match": true,
+        "expected_domain": "operations",
+        "actual_domain": "operations",
+        "domain_match": true
+      },
+      {
+        "id": "mgmt_01",
+        "query": "What are the executive strategic plan priorities for Sankalit Consultant?",
+        "expected_category": "DEPARTMENT_SPECIFIC",
+        "actual_category": "DEPARTMENT_SPECIFIC",
+        "category_match": true,
+        "expected_domain": "management",
+        "actual_domain": "management",
+        "domain_match": true
+      },
+      {
+        "id": "mgmt_02",
+        "query": "Where is the organizational risk register and ISO quality management manual?",
+        "expected_category": "DEPARTMENT_SPECIFIC",
+        "actual_category": "DEPARTMENT_SPECIFIC",
+        "category_match": true,
+        "expected_domain": "management",
+        "actual_domain": "management",
+        "domain_match": true
+      },
+      {
+        "id": "mgmt_03",
+        "query": "Review the board governance and organizational policies briefing.",
+        "expected_category": "DEPARTMENT_SPECIFIC",
+        "actual_category": "DEPARTMENT_SPECIFIC",
+        "category_match": true,
+        "expected_domain": "management",
+        "actual_domain": "management",
+        "domain_match": true
+      },
+      {
+        "id": "gen_01",
+        "query": "What is the capital of Japan?",
+        "expected_category": "GENERAL_KNOWLEDGE",
+        "actual_category": "GENERAL_KNOWLEDGE",
+        "category_match": true,
+        "expected_domain": null,
+        "actual_domain": null,
+        "domain_match": true
+      },
+      {
+        "id": "gen_02",
+        "query": "Who is president of France?",
+        "expected_category": "GENERAL_KNOWLEDGE",
+        "actual_category": "GENERAL_KNOWLEDGE",
+        "category_match": true,
+        "expected_domain": null,
+        "actual_domain": null,
+        "domain_match": true
+      },
+      {
+        "id": "gen_03",
+        "query": "Explain how B-tree indexing works in database storage engines.",
+        "expected_category": "TECHNICAL",
+        "actual_category": "TECHNICAL",
+        "category_match": true,
+        "expected_domain": null,
+        "actual_domain": null,
+        "domain_match": true
+      },
+      {
+        "id": "gen_04",
+        "query": "Draft a professional email to client thanking them for the design review meeting.",
+        "expected_category": "GENERAL_PROFESSIONAL",
+        "actual_category": "GENERAL_PROFESSIONAL",
+        "category_match": true,
+        "expected_domain": null,
+        "actual_domain": null,
+        "domain_match": true
+      }
+    ]
+  },
+  "citation_validation": {
+    "total_tests": 4,
+    "passed_tests": 4,
+    "citation_validation_precision_pct": 100.0
+  },
+  "adversarial_defense": {
+    "total_adversarial_queries": 4,
+    "detected_injections": 4,
+    "detection_rate_pct": 100.0
+  },
+  "insufficient_context_handling": {
+    "total_unanswerable_queries": 3,
+    "correct_refusals": 3,
+    "refusal_rate_pct": 100.0
+  },
+  "overall_score_pct": 100.0
+}

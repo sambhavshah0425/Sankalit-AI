@@ -1,0 +1,31 @@
+[
+  {
+    "id": "acoust_01",
+    "query": "What are the reverberation time RT60 targets for our auditorium designs?",
+    "expected_category": "DEPARTMENT_SPECIFIC",
+    "expected_domain": "acoustic",
+    "is_company_relevant": true
+  },
+  {
+    "id": "acoust_02",
+    "query": "Explain our sound isolation and STC partition ratings standard.",
+    "expected_category": "DEPARTMENT_SPECIFIC",
+    "expected_domain": "acoustic",
+    "is_company_relevant": true
+  },
+  {
+    "id": "acoust_03",
+    "query": "What noise and vibration control criteria do we apply to mechanical plant rooms?",
+    "expected_category": "DEPARTMENT_SPECIFIC",
+    "expected_domain": "acoustic",
+    "is_company_relevant": true
+  },
+  {
+    "id": "acoust_04",
+    "query": "How do we integrate audio-visual systems with architectural acoustics in concert halls?",
+    "expected_category": "DEPARTMENT_SPECIFIC",
+    "expected_domain": "acoustic",
+    "is_company_relevant": true
+  }
+]
+

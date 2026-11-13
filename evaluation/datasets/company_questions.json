@@ -1,0 +1,38 @@
+[
+  {
+    "id": "comp_01",
+    "query": "What does Sankalit Consultant do?",
+    "expected_category": "COMPANY_SPECIFIC",
+    "expected_domain": "company-profile",
+    "is_company_relevant": true
+  },
+  {
+    "id": "comp_02",
+    "query": "What is the mission and vision of Sankalit?",
+    "expected_category": "COMPANY_SPECIFIC",
+    "expected_domain": "company-profile",
+    "is_company_relevant": true
+  },
+  {
+    "id": "comp_03",
+    "query": "Who are we and what are our primary consulting services?",
+    "expected_category": "COMPANY_SPECIFIC",
+    "expected_domain": "company-profile",
+    "is_company_relevant": true
+  },
+  {
+    "id": "comp_04",
+    "query": "Tell me about the history and background of Sankalit Consultant.",
+    "expected_category": "COMPANY_SPECIFIC",
+    "expected_domain": "company-profile",
+    "is_company_relevant": true
+  },
+  {
+    "id": "comp_05",
+    "query": "What engineering disciplines are included in Sankalit's core practice areas?",
+    "expected_category": "COMPANY_SPECIFIC",
+    "expected_domain": "company-profile",
+    "is_company_relevant": true
+  }
+]
+

@@ -1,0 +1,135 @@
+# =====================================================================
+# SANKALIT INTELLIGENCE — GIT IGNORE SPECIFICATION
+# =====================================================================
+
+# ---------------------------------------------------------------------
+# Environment & Secret Files (CRITICAL: NEVER COMMIT SECRETS)
+# ---------------------------------------------------------------------
+.env
+.env.*
+!.env.example
+*.env
+*.pem
+*.key
+*.pfx
+*.pkcs12
+secrets/
+
+# ---------------------------------------------------------------------
+# SQLite Database & Storage Files
+# ---------------------------------------------------------------------
+data/*.db
+data/*.db-journal
+data/*.db-wal
+data/*.db-shm
+data/*.sqlite
+data/*.sqlite3
+data/*.bak
+*.db
+*.sqlite
+*.sqlite3
+*.db-journal
+*.db-wal
+*.db-shm
+*.bak
+*.sql.gz
+
+# Preserve data directory structure without committing database files
+!data/.gitkeep
+
+# ---------------------------------------------------------------------
+# Uploaded Company Documents & User Media
+# ---------------------------------------------------------------------
+uploads/*
+!uploads/.gitkeep
+*.pdf
+*.docx
+*.doc
+*.xlsx
+*.xls
+*.csv
+
+# ---------------------------------------------------------------------
+# Python Virtual Environments & Packages
+# ---------------------------------------------------------------------
+.venv/
+venv/
+ENV/
+env/
+env.bak/
+venv.bak/
+
+# ---------------------------------------------------------------------
+# Python Bytecode & Compilation Caches
+# ---------------------------------------------------------------------
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+share/python-wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+
+# ---------------------------------------------------------------------
+# Test, Linter & Coverage Artifacts
+# ---------------------------------------------------------------------
+.pytest_cache/
+.coverage
+.coverage.*
+.cache
+nosetests.xml
+coverage.xml
+*.cover
+*.py,cover
+.hypothesis/
+.mypy_cache/
+.ruff_cache/
+htmlcov/
+
+# ---------------------------------------------------------------------
+# Local Logs & Runtime Temp Files
+# ---------------------------------------------------------------------
+*.log
+logs/
+tmp/
+temp/
+*.tmp
+
+# ---------------------------------------------------------------------
+# Operating System & IDE Files
+# ---------------------------------------------------------------------
+.DS_Store
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+.vscode/
+.idea/
+*.sublime-project
+*.sublime-workspace
+*.swp
+*.swo
+*~
+
+# ---------------------------------------------------------------------
+# Local Model Weights & Caches
+# ---------------------------------------------------------------------
+models/
+*.bin
+*.safetensors
+*.gguf

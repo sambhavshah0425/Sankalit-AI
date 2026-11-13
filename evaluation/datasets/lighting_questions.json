@@ -1,0 +1,24 @@
+[
+  {
+    "id": "light_01",
+    "query": "What are our architectural lighting design guidelines for indoor office lux levels?",
+    "expected_category": "DEPARTMENT_SPECIFIC",
+    "expected_domain": "lighting",
+    "is_company_relevant": true
+  },
+  {
+    "id": "light_02",
+    "query": "How do we specify DALI and DMX lighting control systems in our technical specifications?",
+    "expected_category": "DEPARTMENT_SPECIFIC",
+    "expected_domain": "lighting",
+    "is_company_relevant": true
+  },
+  {
+    "id": "light_03",
+    "query": "What are the lux and glare index limits for exterior facade lighting?",
+    "expected_category": "DEPARTMENT_SPECIFIC",
+    "expected_domain": "lighting",
+    "is_company_relevant": true
+  }
+]
+

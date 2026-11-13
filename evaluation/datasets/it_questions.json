@@ -1,0 +1,24 @@
+[
+  {
+    "id": "it_01",
+    "query": "What are our enterprise network switch and structured cabling standards?",
+    "expected_category": "DEPARTMENT_SPECIFIC",
+    "expected_domain": "it",
+    "is_company_relevant": true
+  },
+  {
+    "id": "it_02",
+    "query": "Explain our cybersecurity policy regarding server firewall rules and encryption.",
+    "expected_category": "DEPARTMENT_SPECIFIC",
+    "expected_domain": "it",
+    "is_company_relevant": true
+  },
+  {
+    "id": "it_03",
+    "query": "What are the IT helpdesk support procedures for software license provisioning?",
+    "expected_category": "DEPARTMENT_SPECIFIC",
+    "expected_domain": "it",
+    "is_company_relevant": true
+  }
+]
+

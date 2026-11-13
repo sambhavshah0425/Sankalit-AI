@@ -1,0 +1,24 @@
+[
+  {
+    "id": "air_01",
+    "query": "Explain our airport systems architecture for baggage handling systems and BHS tracking.",
+    "expected_category": "DEPARTMENT_SPECIFIC",
+    "expected_domain": "airport-systems",
+    "is_company_relevant": true
+  },
+  {
+    "id": "air_02",
+    "query": "What are the master system integration guidelines for airport AODB and FIDS displays?",
+    "expected_category": "DEPARTMENT_SPECIFIC",
+    "expected_domain": "airport-systems",
+    "is_company_relevant": true
+  },
+  {
+    "id": "air_03",
+    "query": "How are airport terminal access control and security screening networks separated?",
+    "expected_category": "DEPARTMENT_SPECIFIC",
+    "expected_domain": "airport-systems",
+    "is_company_relevant": true
+  }
+]
+

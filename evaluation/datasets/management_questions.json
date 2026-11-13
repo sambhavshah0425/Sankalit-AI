@@ -1,0 +1,24 @@
+[
+  {
+    "id": "mgmt_01",
+    "query": "What are the executive strategic plan priorities for Sankalit Consultant?",
+    "expected_category": "DEPARTMENT_SPECIFIC",
+    "expected_domain": "management",
+    "is_company_relevant": true
+  },
+  {
+    "id": "mgmt_02",
+    "query": "Where is the organizational risk register and ISO quality management manual?",
+    "expected_category": "DEPARTMENT_SPECIFIC",
+    "expected_domain": "management",
+    "is_company_relevant": true
+  },
+  {
+    "id": "mgmt_03",
+    "query": "Review the board governance and organizational policies briefing.",
+    "expected_category": "DEPARTMENT_SPECIFIC",
+    "expected_domain": "management",
+    "is_company_relevant": true
+  }
+]
+

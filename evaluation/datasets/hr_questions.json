@@ -1,0 +1,24 @@
+[
+  {
+    "id": "hr_01",
+    "query": "What is our company annual leave and sick leave accrual policy?",
+    "expected_category": "HR_POLICY",
+    "expected_domain": "hr",
+    "is_company_relevant": true
+  },
+  {
+    "id": "hr_02",
+    "query": "How long is the employee probation period and how is the appraisal conducted?",
+    "expected_category": "HR_POLICY",
+    "expected_domain": "hr",
+    "is_company_relevant": true
+  },
+  {
+    "id": "hr_03",
+    "query": "What are the POSH guidelines and grievance redressal steps in our employee handbook?",
+    "expected_category": "HR_POLICY",
+    "expected_domain": "hr",
+    "is_company_relevant": true
+  }
+]
+

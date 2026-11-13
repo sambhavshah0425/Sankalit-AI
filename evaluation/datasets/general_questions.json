@@ -1,0 +1,31 @@
+[
+  {
+    "id": "gen_01",
+    "query": "What is the capital of Japan?",
+    "expected_category": "GENERAL_KNOWLEDGE",
+    "expected_domain": null,
+    "is_company_relevant": false
+  },
+  {
+    "id": "gen_02",
+    "query": "Who is president of France?",
+    "expected_category": "GENERAL_KNOWLEDGE",
+    "expected_domain": null,
+    "is_company_relevant": false
+  },
+  {
+    "id": "gen_03",
+    "query": "Explain how B-tree indexing works in database storage engines.",
+    "expected_category": "TECHNICAL",
+    "expected_domain": null,
+    "is_company_relevant": false
+  },
+  {
+    "id": "gen_04",
+    "query": "Draft a professional email to client thanking them for the design review meeting.",
+    "expected_category": "GENERAL_PROFESSIONAL",
+    "expected_domain": null,
+    "is_company_relevant": false
+  }
+]
+

@@ -1,0 +1,24 @@
+[
+  {
+    "id": "mep_01",
+    "query": "What are our HVAC chiller plant efficiency and ductwork design standards?",
+    "expected_category": "DEPARTMENT_SPECIFIC",
+    "expected_domain": "mep",
+    "is_company_relevant": true
+  },
+  {
+    "id": "mep_02",
+    "query": "Explain our electrical substation power distribution and transformer sizing methodology.",
+    "expected_category": "DEPARTMENT_SPECIFIC",
+    "expected_domain": "mep",
+    "is_company_relevant": true
+  },
+  {
+    "id": "mep_03",
+    "query": "What are the fire protection sprinkler density requirements under our MEP specifications?",
+    "expected_category": "DEPARTMENT_SPECIFIC",
+    "expected_domain": "mep",
+    "is_company_relevant": true
+  }
+]
+

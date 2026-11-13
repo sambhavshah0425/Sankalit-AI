@@ -1,0 +1,24 @@
+[
+  {
+    "id": "proj_01",
+    "query": "Where can I find the Bill of Quantities BOQ and technical proposal for Project Horizon?",
+    "expected_category": "PROJECT_SPECIFIC",
+    "expected_domain": "projects",
+    "is_company_relevant": true
+  },
+  {
+    "id": "proj_02",
+    "query": "What is the status of the tender submission for the Airport Terminal RFP?",
+    "expected_category": "PROJECT_SPECIFIC",
+    "expected_domain": "projects",
+    "is_company_relevant": true
+  },
+  {
+    "id": "proj_03",
+    "query": "Review the progress report and client deliverable schedule for Metro Station design.",
+    "expected_category": "PROJECT_SPECIFIC",
+    "expected_domain": "projects",
+    "is_company_relevant": true
+  }
+]
+

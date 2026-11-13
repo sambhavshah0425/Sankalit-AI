@@ -1,0 +1,24 @@
+[
+  {
+    "id": "ops_01",
+    "query": "What is our standard procurement SOP for capital equipment and vendor onboarding?",
+    "expected_category": "OPERATIONS",
+    "expected_domain": "operations",
+    "is_company_relevant": true
+  },
+  {
+    "id": "ops_02",
+    "query": "What are the rules for purchase order approval in internal administrative workflows?",
+    "expected_category": "OPERATIONS",
+    "expected_domain": "operations",
+    "is_company_relevant": true
+  },
+  {
+    "id": "ops_03",
+    "query": "Explain the document control, file naming, and archiving standards for engineering deliverables.",
+    "expected_category": "OPERATIONS",
+    "expected_domain": "operations",
+    "is_company_relevant": true
+  }
+]
+
