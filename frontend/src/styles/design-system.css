@@ -1,0 +1,232 @@
+@import "tailwindcss";
+
+/* Sankalit Intelligence — Official Brand Style Guide Rev 05 Tokens */
+:root {
+  /* Approved Brand Colors (SKL-BRD-SG-001 Rev 05) */
+  --sankalit-orange: #F5A623;
+  --sankalit-amber: #F7C05A;
+  --sankalit-deep-orange: #E8820C;
+  --sankalit-silver: #C8C8C8;
+  --sankalit-charcoal: #5A5A5A;
+  --sankalit-dark-grey: #333333;
+  --sankalit-light-grey: #F5F5F5;
+  --sankalit-white: #FFFFFF;
+
+  /* Product-Specific Charcoal Dark SaaS Surfaces */
+  --bg-app: #282828;              /* Main workspace canvas */
+  --bg-sidebar: #1E1E1E;          /* Clean dark sidebar */
+  --bg-chat-card: #2E2E2E;        /* Subtle message surface */
+  --bg-user-bubble: #383838;      /* Distinct user question block */
+  --bg-elevated: #3A3A3A;         /* Modals, menus, dropdowns */
+  --bg-composer: #222222;         /* Dark input composer */
+
+  --border-subtle: rgba(200, 200, 200, 0.18);
+  --border-active: #F5A623;
+  --border-divider: rgba(200, 200, 200, 0.12);
+
+  --text-primary: #FFFFFF;
+  --text-secondary: #D4D4D4;
+  --text-muted: #9E9E9E;
+
+  --accent-primary: #F5A623;      /* Sankalit Orange */
+  --accent-hover: #F7C05A;        /* Sankalit Amber */
+  --accent-dot: #E8820C;          /* Deep Orange */
+
+  --status-success: #70B875;
+  --status-error: #E56857;
+  --status-warning: #F5A623;
+
+  /* Typography: Calibri primary, Arial fallback, Consolas for technical codes */
+  --font-sans: Calibri, Arial, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  --font-mono: Consolas, ui-monospace, Menlo, Monaco, monospace;
+
+  --ease-base: cubic-bezier(0.22, 1, 0.36, 1);
+  --duration-base: 250ms;
+}
+
+@layer base {
+  *, *::before, *::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+  }
+
+  html, body {
+    background-color: var(--bg-app);
+    color: var(--text-primary);
+    font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    line-height: 1.6;
+    height: 100%;
+    overflow: hidden;
+  }
+
+  #root {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+  }
+
+  /* Headings: Charcoal/White, NEVER orange */
+  h1, h2, h3, h4, h5, h6 {
+    font-family: var(--font-sans);
+    color: var(--text-primary);
+    font-weight: 700;
+    letter-spacing: -0.015em;
+    text-wrap: balance;
+  }
+}
+
+/* Typography styles */
+.heading-hero {
+  font-size: 1.875rem; /* ~30px */
+  line-height: 2.25rem;
+  font-weight: 700;
+  color: #FFFFFF;
+}
+
+.heading-section {
+  font-size: 1.25rem;  /* ~20px */
+  line-height: 1.75rem;
+  font-weight: 700;
+  color: #FFFFFF;
+}
+
+.body-chat {
+  font-size: 0.96875rem; /* ~15.5px */
+  line-height: 1.7;
+  color: #F0F0F0;
+  text-wrap: pretty;
+}
+
+.body-user {
+  font-size: 0.9375rem; /* ~15px */
+  line-height: 1.6;
+  color: #FFFFFF;
+}
+
+.caption-meta {
+  font-size: 0.8125rem; /* 13px */
+  line-height: 1.25rem;
+  color: var(--text-muted);
+}
+
+.font-technical {
+  font-family: var(--font-mono);
+}
+
+/* Centered Reading Layout Container — Calibrated to 840px for comfortable reading */
+.chat-scroll-stable {
+  scrollbar-gutter: stable both-edges;
+}
+
+.chat-reading-container {
+  width: 100%;
+  max-width: 936px;
+  margin-inline: auto;
+  box-sizing: border-box;
+}
+
+/* Interactive Elements */
+@layer base {
+  button {
+    font-family: inherit;
+    border: none;
+    background: transparent;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    transition: all var(--duration-base) var(--ease-base);
+  }
+
+  button:active {
+    transform: scale(0.98);
+  }
+
+  button:focus-visible {
+    outline: 2px solid var(--accent-primary);
+    outline-offset: 2px;
+  }
+
+  button:disabled {
+    opacity: 0.45;
+    cursor: not-allowed;
+    pointer-events: none;
+  }
+}
+
+/* Sankalit Orange Action Button */
+.btn-sankalit-orange {
+  background-color: var(--accent-primary);
+  color: #1E1E1E;
+  font-weight: 700;
+  border-radius: 6px;
+  padding: 8px 16px;
+}
+
+.btn-sankalit-orange:hover:not(:disabled) {
+  background-color: var(--accent-hover);
+}
+
+/* Charcoal Elevated Button */
+.btn-charcoal {
+  background-color: var(--bg-elevated);
+  color: var(--text-primary);
+  border: 1px solid var(--border-subtle);
+  border-radius: 6px;
+  padding: 8px 14px;
+}
+
+.btn-charcoal:hover:not(:disabled) {
+  background-color: #484848;
+  border-color: rgba(200, 200, 200, 0.3);
+}
+
+/* Minimalist Scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(200, 200, 200, 0.22);
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(200, 200, 200, 0.35);
+}
+
+/* Pulse animation for active AI connection */
+@keyframes status-pulse {
+  0% { transform: scale(0.95); opacity: 0.8; }
+  50% { transform: scale(1.15); opacity: 1; }
+  100% { transform: scale(0.95); opacity: 0.8; }
+}
+
+.pulse-dot {
+  animation: status-pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+/* Fade in for messages */
+@keyframes message-in {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-message-in {
+  animation: message-in 220ms var(--ease-base) forwards;
+}

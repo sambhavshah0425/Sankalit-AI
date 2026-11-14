@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>QA Loader</title>
+  <script>
+    const params = new URLSearchParams(window.location.search);
+    const mode = params.get('mode') || 'long';
+
+    const longConversation = [
+      {
+        id: "conv-1",
+        title: "What is the 9-Question Spine?",
+        createdAt: "2026-11-14T09:00:00.000Z",
+        updatedAt: "2026-11-14T09:00:00.000Z",
+        messages: [
+          {
+            id: "m1",
+            role: "user",
+            content: "What is the 9-Question Spine at Sankalit?",
+            timestamp: "2:15 PM"
+          },
+          {
+            id: "m2",
+            role: "assistant",
+            content: "The 9-Question Spine is Sankalit Consultant's core philosophical and operational backbone. It translates the company's guiding principle—\"It's all about Integration\"—into a systematic engineering inquiry.\n\n### Core Inquiries of the Spine\n\n1. **What is the primary client objective?** Establish the fundamental project goal before committing to technical solutions.\n2. **What are the technical specifications (TSD)?** Ground the design in measurable capacity criteria and applicable codes.\n3. **What is the Design Basis Report (DBR)?** Synthesize multidisciplinary assumptions into a unified technical charter.\n4. **What are the constraints and limitations?** Identify physical, budgetary, regulatory, and temporal boundaries.\n5. **What is the boundary condition?** Define the precise interface points where Sankalit's systems interact with external utilities.\n6. **What is the multidisciplinary scope of work?** Map all interconnects between electrical, mechanical, structural, and automation systems.\n7. **What are the Key Performance Indicators (KPIs)?** Establish quantifiable performance and reliability metrics.\n8. **What are the risks and mitigation strategies?** Anticipate potential failure modes and build proactive contingencies.\n9. **What is the integrated deliverable outcome?** Deliver a coordinated, constructible, and fully validated project package.\n\n### Multidisciplinary Application Matrix\n\n| Engineering Phase | Focus Inquiries | Primary Responsible Lead |\n| --- | --- | --- |\n| Concept & DBR | Inquiries 1–4: Intent & Boundaries | Lead Systems Architect |\n| Detailed Engineering | Inquiries 5–7: Interfaces & KPIs | Discipline Project Engineers |\n| Commissioning & Handover | Inquiries 8–9: Risk & Validation | Integration Director |\n\n> Integration is not something that happens at the end of design; it is the discipline practiced at every step.",
+            timestamp: "2:15 PM",
+            sources: [
+              {
+                filename: "SKL-INT-PHIL-001_9-Question-Spine_Sankalit-Guiding-Principle.docx",
+                chunk_index: 22,
+                similarity: 0.694697,
+                document_title: "The 9-Question Spine: Sankalit's Guiding Principle"
+              },
+              {
+                filename: "SKL-INT-OPS-001_Sankalit-Operating-System.docx",
+                chunk_index: 8,
+                similarity: 0.64215,
+                document_title: "Sankalit Operating System (SOS)"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        id: "conv-2",
+        title: "Operating System principles",
+        createdAt: "2026-11-14T08:30:00.000Z",
+        updatedAt: "2026-11-14T08:30:00.000Z",
+        messages: [
+          {
+            id: "m3",
+            role: "user",
+            content: "Can you summarize the Sankalit Operating System?",
+            timestamp: "1:45 PM"
+          },
+          {
+            id: "m4",
+            role: "assistant",
+            content: "The Sankalit Operating System (SOS) standardizes multidisciplinary engineering workflows across MEP, ICT, structures, and sustainability systems.",
+            timestamp: "1:45 PM",
+            sources: []
+          }
+        ]
+      }
+    ];
+
+    const shortConversation = [
+      {
+        id: "conv-short",
+        title: "Company Tagline",
+        createdAt: "2026-11-14T09:10:00.000Z",
+        updatedAt: "2026-11-14T09:10:00.000Z",
+        messages: [
+          {
+            id: "ms1",
+            role: "user",
+            content: "What is Sankalit's official company tagline?",
+            timestamp: "2:20 PM"
+          },
+          {
+            id: "ms2",
+            role: "assistant",
+            content: "Sankalit Consultant's official tagline is: **\"It's all about Integration.\"**\n\nThis reflects the company's core philosophy that true engineering excellence arises not from siloed discipline excellence, but from the seamless, coordinated integration of all multidisciplinary systems.",
+            timestamp: "2:20 PM",
+            sources: [
+              {
+                filename: "SKL-INT-CCD-001_Company-Context-Document.docx",
+                chunk_index: 3,
+                similarity: 0.8124,
+                document_title: "Company Context Document"
+              }
+            ]
+          }
+        ]
+      }
+    ];
+
+    if (mode === 'empty') {
+      localStorage.removeItem('skl_conversations_v1');
+      localStorage.removeItem('skl_active_conv_id');
+    } else if (mode === 'short') {
+      localStorage.setItem('skl_conversations_v1', JSON.stringify(shortConversation));
+      localStorage.setItem('skl_active_conv_id', 'conv-short');
+    } else {
+      localStorage.setItem('skl_conversations_v1', JSON.stringify(longConversation));
+      localStorage.setItem('skl_active_conv_id', 'conv-1');
+    }
+
+    const searchParams = new URLSearchParams(window.location.search);
+    searchParams.delete('mode');
+    const queryString = searchParams.toString();
+    const redirectUrl = queryString ? `/app?${queryString}` : '/app';
+    window.location.replace(redirectUrl);
+  </script>
+</head>
+<body style="background: #282828; color: #fff; font-family: sans-serif; padding: 20px;">
+  Loading QA environment...
+</body>
+</html>
