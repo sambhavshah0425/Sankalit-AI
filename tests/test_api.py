@@ -171,15 +171,25 @@ class TestAPIEndpoints(unittest.TestCase):
 
         mock_answer_async.side_effect = fake_answer
 
+        # Test detailed response mode
         resp = self.client.post(
             "/rag/query",
-            json={"query": "What does Sankalit use?", "top_k": 3, "min_score": 0.3}
+            json={"query": "What does Sankalit use?", "top_k": 3, "min_score": 0.3, "detailed": True}
         )
         self.assertEqual(resp.status_code, 200)
         body = resp.json()
         self.assertIn("local AI", body["answer"])
         self.assertEqual(body["retrieval_status"], "success")
         self.assertEqual(len(body["sources"]), 1)
+
+        # Test simple QA mode (default, no metadata clutter)
+        resp_simple = self.client.post(
+            "/rag/query",
+            json={"query": "What does Sankalit use?", "top_k": 3, "min_score": 0.3}
+        )
+        self.assertEqual(resp_simple.status_code, 200)
+        simple_body = resp_simple.json()
+        self.assertEqual(set(simple_body.keys()), {"question", "answer"})
 
     def test_rag_stats_endpoint(self):
         resp = self.client.get("/rag/stats")

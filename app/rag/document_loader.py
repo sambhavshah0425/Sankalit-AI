@@ -24,16 +24,37 @@ def extract_pdf(file_path: str) -> str:
 
 
 def extract_docx(file_path: str) -> str:
-    """Extract text from a DOCX file."""
+    """Extract text from a DOCX file including paragraphs and tables in document order."""
     document = Document(file_path)
+    from docx.text.paragraph import Paragraph
+    from docx.table import Table
 
-    paragraphs = [
-        paragraph.text.strip()
-        for paragraph in document.paragraphs
-        if paragraph.text.strip()
-    ]
+    content_blocks = []
 
-    return "\n\n".join(paragraphs)
+    for element in document.element.body:
+        if element.tag.endswith('p'):
+            p = Paragraph(element, document)
+            text = p.text.strip()
+            if text:
+                content_blocks.append(text)
+        elif element.tag.endswith('tbl'):
+            tbl = Table(element, document)
+            table_rows = []
+            for row in tbl.rows:
+                seen_cells = set()
+                row_cells = []
+                for cell in row.cells:
+                    if cell._tc not in seen_cells:
+                        seen_cells.add(cell._tc)
+                        txt = cell.text.strip().replace("\n", " ")
+                        if txt:
+                            row_cells.append(txt)
+                if row_cells:
+                    table_rows.append(" | ".join(row_cells))
+            if table_rows:
+                content_blocks.append("\n".join(table_rows))
+
+    return "\n\n".join(content_blocks)
 
 
 def load_document(file_path: str) -> dict:

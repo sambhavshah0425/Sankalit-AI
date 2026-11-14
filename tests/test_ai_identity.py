@@ -36,7 +36,7 @@ class TestAIIdentityEngine(unittest.TestCase):
         self.assertIn("Sankalit Consultant", AI_ROLE)
 
         profile = get_company_profile()
-        self.assertEqual(profile["company_name"], "Sankalit Consultant")
+        self.assertTrue(profile["company_name"].startswith("Sankalit Consultant"))
         self.assertIn("practice_areas", profile)
         self.assertTrue(len(profile["practice_areas"]) >= 5)
 

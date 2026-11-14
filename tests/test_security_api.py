@@ -191,7 +191,7 @@ class TestSecurityAPI(unittest.TestCase):
         # 1. HR User queries salary policy -> Authorized, answers with citations
         hr_rag_resp = self.client.post(
             "/rag/query",
-            json={"query": "What is the partner salary?", "top_k": 3, "min_score": 0.25},
+            json={"query": "What is the partner salary?", "top_k": 3, "min_score": 0.25, "detailed": True},
             headers={"Authorization": f"Bearer {self.hr_token}"}
         )
         self.assertEqual(hr_rag_resp.status_code, 200)
@@ -204,7 +204,7 @@ class TestSecurityAPI(unittest.TestCase):
         # Short-circuits immediately to insufficient context!
         it_rag_resp = self.client.post(
             "/rag/query",
-            json={"query": "What is the partner salary?", "top_k": 3, "min_score": 0.25},
+            json={"query": "What is the partner salary?", "top_k": 3, "min_score": 0.25, "detailed": True},
             headers={"Authorization": f"Bearer {self.it_token}"}
         )
         self.assertEqual(it_rag_resp.status_code, 200)

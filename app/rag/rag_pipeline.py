@@ -4,6 +4,7 @@ domain-aware retrieval, structured context isolation, and citation validation.
 
 import logging
 import os
+import re
 from pathlib import Path
 from typing import Any, Dict, List, Optional
 import httpx
@@ -30,6 +31,29 @@ OLLAMA_MODEL = os.getenv("OLLAMA_MODEL", "qwen3:1.7b")
 INSUFFICIENT_CONTEXT_MESSAGE = (
     "The available documents do not contain enough information in the Sankalit company knowledge base to answer this question accurately."
 )
+
+
+def clean_plain_text(text: str) -> str:
+    """Clean markdown asterisks, bold/italics, quotes, and header symbols to produce pure plain text."""
+    if not text:
+        return ""
+    # Strip markdown bold/italics asterisks: **text** -> text, *text* -> text
+    clean = re.sub(r"\*\*([^*]+)\*\*", r"\1", text)
+    clean = re.sub(r"\*([^*]+)\*", r"\1", clean)
+    clean = re.sub(r"__([^_]+)__", r"\1", clean)
+    clean = re.sub(r"_([^_]+)_", r"\1", clean)
+    # Strip any remaining asterisks (e.g. '* \n' or leftover '**' or bullet points)
+    clean = clean.replace("*", "")
+    # Strip leading markdown headers (#, ##, etc.)
+    clean = re.sub(r"^#{1,6}\s*", "", clean, flags=re.MULTILINE)
+    # Remove escaped quotes and quotation marks around words/phrases
+    clean = clean.replace(r'\"', '').replace(r"\'", "'")
+    clean = clean.replace('"', '')
+    # Clean leading bullet symbols like '- ' or '• '
+    clean = re.sub(r"^\s*[-•]\s*", "", clean, flags=re.MULTILINE)
+    # Normalize excessive newlines
+    clean = re.sub(r"\n{3,}", "\n\n", clean)
+    return clean.strip()
 
 
 def build_context_string(chunks: List[Dict[str, Any]]) -> str:
@@ -212,6 +236,7 @@ def answer_query(
             response.raise_for_status()
             result = response.json()
             answer_text = result.get("response", "").strip()
+            answer_text = clean_plain_text(answer_text)
 
         # Step 6: Citation Validation
         citation_analysis = validate_citations(answer_text, included_chunks)
@@ -386,6 +411,7 @@ async def answer_query_async(
             response.raise_for_status()
             result = response.json()
             answer_text = result.get("response", "").strip()
+            answer_text = clean_plain_text(answer_text)
 
         # Step 6: Citation Validation
         citation_analysis = validate_citations(answer_text, included_chunks)

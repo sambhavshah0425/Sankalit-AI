@@ -16,6 +16,8 @@ from fastapi import (
     UploadFile,
     status,
 )
+from fastapi.responses import FileResponse
+from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel, Field
 
 EMAIL_REGEX = r"^[^@\s]+@[^@\s]+\.[^@\s]+$"
@@ -92,6 +94,11 @@ app = FastAPI(
     version="0.3.0",
     lifespan=lifespan
 )
+
+FRONTEND_DIST = Path(__file__).resolve().parent.parent / "frontend" / "dist"
+if FRONTEND_DIST.exists() and (FRONTEND_DIST / "assets").exists():
+    app.mount("/assets", StaticFiles(directory=str(FRONTEND_DIST / "assets")), name="frontend_assets")
+
 
 
 # =====================================================================
@@ -173,14 +180,23 @@ class DocumentPermissionsUpdateRequest(BaseModel):
 
 class RAGQueryRequest(BaseModel):
     query: str = Field(min_length=1, max_length=2000, description="Natural language question to ask company knowledge base")
-    top_k: int = Field(default=4, ge=1, le=20, description="Maximum number of context chunks to retrieve")
+    top_k: int = Field(default=10, ge=1, le=20, description="Maximum number of context chunks to retrieve")
     min_score: float = Field(default=0.25, ge=0.0, le=1.0, description="Minimum cosine similarity threshold")
+    detailed: bool = Field(default=False, description="Set to true if full technical retrieval metadata and sources are required")
     domain_id: Optional[int] = None
     domain_slug: Optional[str] = None
     category_id: Optional[int] = None
     department_id: Optional[int] = None
     project_name: Optional[str] = None
     document_type: Optional[str] = None
+
+    model_config = {
+        "json_schema_extra": {
+            "example": {
+                "query": "can u list me all 9 question spine?"
+            }
+        }
+    }
 
 
 class CompanyProfileUpdateRequest(BaseModel):
@@ -262,11 +278,93 @@ class DocumentMetadataUpdateRequest(BaseModel):
 # =====================================================================
 
 @app.get("/")
-async def root():
+async def root(request: Request):
+    accept = request.headers.get("accept", "")
+    if "text/html" in accept and FRONTEND_DIST.exists() and (FRONTEND_DIST / "index.html").exists():
+        return FileResponse(str(FRONTEND_DIST / "index.html"))
     return {
         "application": "Sankalit Intelligence",
         "status": "running"
     }
+
+
+@app.get("/app")
+async def serve_app():
+    if FRONTEND_DIST.exists() and (FRONTEND_DIST / "index.html").exists():
+        return FileResponse(str(FRONTEND_DIST / "index.html"))
+    raise HTTPException(status_code=404, detail="Frontend build not found.")
+
+
+@app.get("/brand-icon.svg")
+async def serve_brand_icon():
+    icon_path = FRONTEND_DIST / "brand-icon.svg"
+    if icon_path.exists():
+        return FileResponse(str(icon_path))
+    raise HTTPException(status_code=404, detail="Brand icon not found.")
+
+
+@app.get("/sankalit-logo.jpg")
+async def serve_sankalit_logo():
+    logo_path = FRONTEND_DIST / "sankalit-logo.jpg"
+    if logo_path.exists():
+        return FileResponse(str(logo_path), media_type="image/jpeg")
+    raise HTTPException(status_code=404, detail="Logo not found.")
+
+
+@app.get("/sankalit-mark.jpg")
+async def serve_sankalit_mark():
+    mark_path = FRONTEND_DIST / "sankalit-mark.jpg"
+    if mark_path.exists():
+        return FileResponse(str(mark_path), media_type="image/jpeg")
+    raise HTTPException(status_code=404, detail="Mark not found.")
+
+
+@app.get("/sankalit-logo-lightgrey.png")
+async def serve_sankalit_logo_lightgrey():
+    logo_path = FRONTEND_DIST / "sankalit-logo-lightgrey.png"
+    if logo_path.exists():
+        return FileResponse(str(logo_path), media_type="image/png")
+    raise HTTPException(status_code=404, detail="Logo not found.")
+
+
+@app.get("/sankalit-logo-white.png")
+async def serve_sankalit_logo_white():
+    logo_path = FRONTEND_DIST / "sankalit-logo-white.png"
+    if logo_path.exists():
+        return FileResponse(str(logo_path), media_type="image/png")
+    raise HTTPException(status_code=404, detail="Logo not found.")
+
+
+@app.get("/sankalit-logo-charcoal.png")
+async def serve_sankalit_logo_charcoal():
+    logo_path = FRONTEND_DIST / "sankalit-logo-charcoal.png"
+    if logo_path.exists():
+        return FileResponse(str(logo_path), media_type="image/png")
+    raise HTTPException(status_code=404, detail="Logo not found.")
+
+
+@app.get("/sankalit-logo.png")
+async def serve_sankalit_logo_png():
+    logo_path = FRONTEND_DIST / "sankalit-logo.png"
+    if logo_path.exists():
+        return FileResponse(str(logo_path), media_type="image/png")
+    raise HTTPException(status_code=404, detail="Logo PNG not found.")
+
+
+@app.get("/favicon.svg")
+async def serve_favicon():
+    favicon_path = FRONTEND_DIST / "favicon.svg"
+    if favicon_path.exists():
+        return FileResponse(str(favicon_path), media_type="image/svg+xml")
+    raise HTTPException(status_code=404, detail="Favicon not found.")
+
+
+@app.get("/qa_loader.html")
+async def serve_qa_loader():
+    loader_path = FRONTEND_DIST / "qa_loader.html"
+    if loader_path.exists():
+        return FileResponse(str(loader_path), media_type="text/html")
+    raise HTTPException(status_code=404, detail="QA Loader not found.")
 
 
 @app.get("/health")
@@ -368,15 +466,39 @@ async def register(req: RegisterRequest, request: Request):
 
 
 @app.post("/auth/login")
-async def login(req: LoginRequest, request: Request):
+async def login(request: Request):
     """
     Authenticate user, enforce lockout on consecutive failures, and return JWT tokens.
+    Supports both JSON request body and application/x-www-form-urlencoded (Swagger UI OAuth2 Authorize).
     """
     ip_addr = get_client_ip(request)
+    username = None
+    password = None
+
+    content_type = request.headers.get("content-type", "").lower()
+    if "application/x-www-form-urlencoded" in content_type or "multipart/form-data" in content_type:
+        form = await request.form()
+        username = form.get("username")
+        password = form.get("password")
+    else:
+        try:
+            body = await request.json()
+            if isinstance(body, dict):
+                username = body.get("username")
+                password = body.get("password")
+        except Exception:
+            pass
+
+    if not username or not password:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Username and password are required."
+        )
+
     try:
         user_data, access_token, refresh_token = auth_service.authenticate_user(
-            username_or_email=req.username,
-            password=req.password,
+            username_or_email=str(username).strip(),
+            password=str(password),
             ip_address=ip_addr
         )
         return {
@@ -1009,19 +1131,32 @@ async def rag_query(
     )
 
     try:
+        # Gracefully handle Swagger UI dummy defaults (0, "string", empty)
+        effective_domain_id = request.domain_id if request.domain_id and request.domain_id > 0 else None
+        effective_category_id = request.category_id if request.category_id and request.category_id > 0 else None
+        effective_department_id = request.department_id if request.department_id and request.department_id > 0 else None
+        effective_domain_slug = request.domain_slug.strip() if request.domain_slug and request.domain_slug.strip().lower() != "string" else None
+        effective_project_name = request.project_name.strip() if request.project_name and request.project_name.strip().lower() != "string" else None
+        effective_document_type = request.document_type.strip() if request.document_type and request.document_type.strip().lower() != "string" else None
+
         result = await answer_query_async(
             query=request.query,
             top_k=request.top_k,
             min_score=request.min_score,
             allowed_document_ids=allowed_ids,
-            domain_id=request.domain_id,
-            domain_slug=request.domain_slug,
-            category_id=request.category_id,
-            department_id=request.department_id,
-            project_name=request.project_name,
-            document_type=request.document_type
+            domain_id=effective_domain_id,
+            domain_slug=effective_domain_slug,
+            category_id=effective_category_id,
+            department_id=effective_department_id,
+            project_name=effective_project_name,
+            document_type=effective_document_type
         )
-        return result
+        if request.detailed:
+            return result
+        return {
+            "question": request.query,
+            "answer": result.get("answer", "")
+        }
     except RuntimeError as exc:
         raise HTTPException(
             status_code=status.HTTP_503_SERVICE_UNAVAILABLE,

@@ -18,6 +18,7 @@ SYNONYM_MAPPINGS = [
     (r"\blux levels\b", "lighting illuminance specifications"),
     (r"\blighting plan\b", "architectural lighting design"),
     (r"\bprocurement rules\b", "procurement SOP vendor management"),
+    (r"\b(9|nine)[-\s]?questions?(?:[-\s]?spine)?\b", "9-Question Spine (Why, What, How, How Much, Who, When, Where, Prove It, After)"),
 ]
 
 
