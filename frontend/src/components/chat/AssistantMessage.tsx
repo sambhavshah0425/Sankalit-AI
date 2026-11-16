@@ -227,7 +227,19 @@ export const AssistantMessage: React.FC<AssistantMessageProps> = ({ message }) =
 
           {/* Answer content — editorial, directly on the canvas */}
           <div className="max-w-[820px] text-[16px] leading-[1.62] text-[#E0E0E0] font-sans">
-            {renderFormattedContent(message.content)}
+            {message.content ? (
+              <>
+                {renderFormattedContent(message.content)}
+                {message.retrieval_status === 'generating' && (
+                  <span className="inline-block w-1.5 h-4 ml-1 bg-[#F5A623] animate-pulse align-middle" />
+                )}
+              </>
+            ) : message.retrieval_status === 'generating' ? (
+              <span className="inline-flex items-center gap-2 text-xs text-[#8E8E93] animate-pulse py-1">
+                <span className="w-1.5 h-1.5 rounded-full bg-[#F5A623]"></span>
+                Synthesizing company knowledge...
+              </span>
+            ) : null}
           </div>
 
           {/* Insufficient context alert */}

@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useEffect, useState } from 'react';
-import { askKnowledgeBase, checkOllamaHealth } from '../api/rag';
+import { askKnowledgeBase, askKnowledgeBaseStream, checkOllamaHealth } from '../api/rag';
 import type { ConversationSession, Message } from '../types/chat';
 import type { HealthStatus } from '../types/document';
 
@@ -146,52 +146,140 @@ export const ChatProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
     setIsGenerating(true);
 
+    const assistantMsgId = `msg_a_${Date.now()}`;
+    const initialAssistantMessage: Message = {
+      id: assistantMsgId,
+      role: 'assistant',
+      content: '',
+      timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+      sources: [],
+      retrieval_status: 'generating',
+    };
+
+    // Pre-insert assistant message so typing/streaming starts immediately
+    setSessions((prev) =>
+      prev.map((s) => {
+        if (s.id === targetSessionId) {
+          return {
+            ...s,
+            updatedAt: new Date().toISOString(),
+            messages: [...s.messages, initialAssistantMessage],
+          };
+        }
+        return s;
+      })
+    );
+
     try {
-      const response = await askKnowledgeBase(trimmed, 10, 0.25);
-
-      const assistantMessage: Message = {
-        id: `msg_a_${Date.now()}`,
-        role: 'assistant',
-        content: response.answer,
-        timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
-        sources: response.sources || [],
-        detected_domain: response.detected_domain || undefined,
-        retrieval_status: response.retrieval_status || 'success',
-      };
-
-      setSessions((prev) =>
-        prev.map((s) => {
-          if (s.id === targetSessionId) {
-            return {
-              ...s,
-              updatedAt: new Date().toISOString(),
-              messages: [...s.messages, assistantMessage],
-            };
-          }
-          return s;
-        })
+      let accumulatedText = '';
+      await askKnowledgeBaseStream(
+        trimmed,
+        {
+          onMetadata: (meta) => {
+            setSessions((prev) =>
+              prev.map((s) => {
+                if (s.id === targetSessionId) {
+                  return {
+                    ...s,
+                    updatedAt: new Date().toISOString(),
+                    messages: s.messages.map((m) =>
+                      m.id === assistantMsgId
+                        ? {
+                            ...m,
+                            sources: meta.sources || [],
+                            detected_domain: meta.detected_domain,
+                            retrieval_status: meta.retrieval_status || 'success',
+                          }
+                        : m
+                    ),
+                  };
+                }
+                return s;
+              })
+            );
+          },
+          onDelta: (token) => {
+            accumulatedText += token;
+            setSessions((prev) =>
+              prev.map((s) => {
+                if (s.id === targetSessionId) {
+                  return {
+                    ...s,
+                    updatedAt: new Date().toISOString(),
+                    messages: s.messages.map((m) =>
+                      m.id === assistantMsgId
+                        ? {
+                            ...m,
+                            content: accumulatedText,
+                          }
+                        : m
+                    ),
+                  };
+                }
+                return s;
+              })
+            );
+          },
+          onDone: () => {
+            // Stream complete
+          },
+          onError: (err) => {
+            console.error('Streaming error callback:', err);
+          },
+        },
+        3,
+        0.25
       );
     } catch (err: any) {
-      const errorMessage: Message = {
-        id: `msg_err_${Date.now()}`,
-        role: 'assistant',
-        content: `Error: ${err.message || 'Unable to retrieve an answer from the local knowledge base. Please check backend connection.'}`,
-        timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
-        isError: true,
-      };
-
-      setSessions((prev) =>
-        prev.map((s) => {
-          if (s.id === targetSessionId) {
-            return {
-              ...s,
-              updatedAt: new Date().toISOString(),
-              messages: [...s.messages, errorMessage],
-            };
-          }
-          return s;
-        })
-      );
+      // If streaming fails (e.g. proxy or old backend), fallback to non-streaming endpoint
+      try {
+        const response = await askKnowledgeBase(trimmed, 3, 0.25);
+        setSessions((prev) =>
+          prev.map((s) => {
+            if (s.id === targetSessionId) {
+              return {
+                ...s,
+                updatedAt: new Date().toISOString(),
+                messages: s.messages.map((m) =>
+                  m.id === assistantMsgId
+                    ? {
+                        ...m,
+                        content: response.answer,
+                        sources: response.sources || [],
+                        detected_domain: response.detected_domain || undefined,
+                        retrieval_status: response.retrieval_status || 'success',
+                      }
+                    : m
+                ),
+              };
+            }
+            return s;
+          })
+        );
+      } catch (fallbackErr: any) {
+        const errorContent = `Error: ${fallbackErr.message || err.message || 'Unable to retrieve answer.'}`;
+        setSessions((prev) =>
+          prev.map((s) => {
+            if (s.id === targetSessionId) {
+              return {
+                ...s,
+                updatedAt: new Date().toISOString(),
+                messages: s.messages.map((m) =>
+                  m.id === assistantMsgId
+                    ? {
+                        ...m,
+                        content: errorContent,
+                        isError: true,
+                        retrieval_status: 'insufficient_context',
+                      }
+                    : m
+                ),
+              };
+            }
+            return s;
+          })
+        );
+      }
     } finally {
       setIsGenerating(false);
     }

@@ -2,6 +2,7 @@
 domain-aware retrieval, structured context isolation, and citation validation.
 """
 
+import json
 import logging
 import os
 import re
@@ -82,7 +83,7 @@ def build_rag_prompt(query: str, context_str: str, system_prompt: Optional[str] 
 
 def answer_query(
     query: str,
-    top_k: int = 4,
+    top_k: int = 3,
     min_score: float = 0.25,
     allowed_document_ids: Optional[List[int]] = None,
     domain_id: Optional[int] = None,
@@ -226,10 +227,12 @@ def answer_query(
                     "prompt": prompt,
                     "stream": False,
                     "think": False,
+                    "keep_alive": "24h",
                     "options": {
-                        "num_ctx": 2048,
-                        "num_predict": 384,
-                        "temperature": 0.1
+                        "num_ctx": 1536,
+                        "num_predict": 300,
+                        "temperature": 0.1,
+                        "num_thread": 4
                     }
                 }
             )
@@ -263,7 +266,7 @@ def answer_query(
 
 async def answer_query_async(
     query: str,
-    top_k: int = 4,
+    top_k: int = 3,
     min_score: float = 0.25,
     allowed_document_ids: Optional[List[int]] = None,
     domain_id: Optional[int] = None,
@@ -401,10 +404,12 @@ async def answer_query_async(
                     "prompt": prompt,
                     "stream": False,
                     "think": False,
+                    "keep_alive": "24h",
                     "options": {
-                        "num_ctx": 2048,
-                        "num_predict": 384,
-                        "temperature": 0.1
+                        "num_ctx": 1536,
+                        "num_predict": 300,
+                        "temperature": 0.1,
+                        "num_thread": 4
                     }
                 }
             )
@@ -434,3 +439,194 @@ async def answer_query_async(
     except Exception as exc:
         logger.error(f"RAG async generation failed: {exc}")
         raise RuntimeError(f"RAG inference error: {exc}") from exc
+
+
+async def answer_query_stream_async(
+    query: str,
+    top_k: int = 3,
+    min_score: float = 0.25,
+    allowed_document_ids: Optional[List[int]] = None,
+    domain_id: Optional[int] = None,
+    domain_slug: Optional[str] = None,
+    category_id: Optional[int] = None,
+    department_id: Optional[int] = None,
+    project_name: Optional[str] = None,
+    document_type: Optional[str] = None,
+    db_path: Optional[Path] = None,
+    timeout: float = 120.0
+):
+    """
+    Streaming generator for RAG query.
+    Yields Server-Sent Event (SSE) strings:
+    - event: metadata -> initial sources, status, domain
+    - event: delta -> live token chunks
+    - event: done -> validation citations and final completion
+    """
+    if not query or not query.strip():
+        yield f"event: metadata\ndata: {json.dumps({'retrieval_status': 'empty_query', 'sources': []})}\n\n"
+        yield f"event: delta\ndata: {json.dumps({'text': 'Query cannot be empty.'})}\n\n"
+        yield f"event: done\ndata: {json.dumps({'status': 'done'})}\n\n"
+        return
+
+    clean_query = query.strip()
+
+    # Step 1: Query Understanding & Normalization
+    classification = classify_query(clean_query)
+    norm_info = normalize_query(clean_query)
+    effective_domain_slug = domain_slug or classification.get("domain_slug")
+
+    # Step 2: Semantic retrieval
+    retrieved_chunks = retrieve_relevant_chunks(
+        query=norm_info["rewritten_query"],
+        top_k=top_k,
+        min_score=min_score,
+        allowed_document_ids=allowed_document_ids,
+        domain_id=domain_id,
+        domain_slug=effective_domain_slug,
+        category_id=category_id,
+        department_id=department_id,
+        project_name=project_name,
+        document_type=document_type,
+        db_path=db_path
+    )
+
+    if not retrieved_chunks and effective_domain_slug and domain_id is None:
+        retrieved_chunks = retrieve_relevant_chunks(
+            query=clean_query,
+            top_k=top_k,
+            min_score=min_score,
+            allowed_document_ids=allowed_document_ids,
+            category_id=category_id,
+            department_id=department_id,
+            project_name=project_name,
+            document_type=document_type,
+            db_path=db_path
+        )
+
+    # Step 3: Handle Insufficient Context & General Knowledge
+    if not retrieved_chunks:
+        is_general = classification["classification"] in (CLASS_GENERAL_KNOWLEDGE, CLASS_GENERAL_PROFESSIONAL)
+        if is_general:
+            system_prompt = build_system_prompt(db_path=db_path)
+            gen_prompt = (
+                f"{system_prompt}\n\n"
+                f"USER QUESTION: {clean_query}\n\n"
+                f"INSTRUCTIONS: Answer concisely based on standard industry principles in plain text. "
+                f"Avoid asterisks **. Note clearly that this is general professional knowledge."
+            )
+            yield f"event: metadata\ndata: {json.dumps({'sources': [], 'retrieval_status': 'general_knowledge', 'classification': classification['classification']})}\n\n"
+            try:
+                async with httpx.AsyncClient(timeout=timeout) as client:
+                    async with client.stream(
+                        "POST",
+                        f"{OLLAMA_URL}/api/generate",
+                        json={
+                            "model": OLLAMA_MODEL,
+                            "prompt": gen_prompt,
+                            "stream": True,
+                            "think": False,
+                            "keep_alive": "24h",
+                            "options": {
+                                "num_ctx": 1536,
+                                "num_predict": 300,
+                                "temperature": 0.2,
+                                "num_thread": 4
+                            }
+                        }
+                    ) as resp:
+                        resp.raise_for_status()
+                        async for line in resp.aiter_lines():
+                            if not line:
+                                continue
+                            try:
+                                parsed = json.loads(line)
+                                tok = parsed.get("response", "")
+                                if tok:
+                                    clean_tok = tok.replace("*", "").replace('"', '')
+                                    yield f"event: delta\ndata: {json.dumps({'text': clean_tok})}\n\n"
+                            except Exception:
+                                pass
+            except Exception as e:
+                logger.error(f"General streaming error: {e}")
+            yield f"event: done\ndata: {json.dumps({'status': 'done'})}\n\n"
+            return
+
+        yield f"event: metadata\ndata: {json.dumps({'sources': [], 'retrieval_status': 'insufficient_context', 'classification': classification['classification']})}\n\n"
+        yield f"event: delta\ndata: {json.dumps({'text': INSUFFICIENT_CONTEXT_MESSAGE})}\n\n"
+        yield f"event: done\ndata: {json.dumps({'status': 'done'})}\n\n"
+        return
+
+    # Step 4: Context Construction
+    context_str, included_chunks = build_rag_context(retrieved_chunks)
+    system_prompt = build_system_prompt(db_path=db_path)
+    prompt = build_rag_prompt(clean_query, context_str, system_prompt)
+
+    sources = [
+        {
+            "filename": c.get("filename"),
+            "chunk_index": c.get("chunk_index"),
+            "similarity": c.get("similarity"),
+            "document_title": c.get("document_title"),
+            "domain_slug": c.get("domain_slug")
+        }
+        for c in included_chunks
+    ]
+
+    metadata_payload = {
+        "sources": sources,
+        "classification": classification["classification"],
+        "detected_domain": classification["domain_slug"],
+        "retrieval_status": "success",
+        "model": OLLAMA_MODEL
+    }
+    yield f"event: metadata\ndata: {json.dumps(metadata_payload)}\n\n"
+
+    # Step 5: Stream inference tokens from Ollama
+    full_text = []
+    try:
+        async with httpx.AsyncClient(timeout=timeout) as client:
+            async with client.stream(
+                "POST",
+                f"{OLLAMA_URL}/api/generate",
+                json={
+                    "model": OLLAMA_MODEL,
+                    "prompt": prompt,
+                    "stream": True,
+                    "think": False,
+                    "keep_alive": "24h",
+                    "options": {
+                        "num_ctx": 1536,
+                        "num_predict": 300,
+                        "temperature": 0.1,
+                        "num_thread": 4
+                    }
+                }
+            ) as resp:
+                resp.raise_for_status()
+                async for line in resp.aiter_lines():
+                    if not line:
+                        continue
+                    try:
+                        parsed = json.loads(line)
+                        tok = parsed.get("response", "")
+                        if tok:
+                            clean_tok = tok.replace("*", "").replace('"', '')
+                            full_text.append(clean_tok)
+                            yield f"event: delta\ndata: {json.dumps({'text': clean_tok})}\n\n"
+                    except Exception:
+                        pass
+
+        # Step 6: Validate citations and complete
+        accumulated = "".join(full_text).strip()
+        citation_analysis = validate_citations(accumulated, included_chunks)
+        done_payload = {
+            "status": "done",
+            "citations": citation_analysis["validated_citations"],
+            "unverified_citations": citation_analysis["unverified_citations"],
+            "has_valid_citations": citation_analysis["has_valid_citations"]
+        }
+        yield f"event: done\ndata: {json.dumps(done_payload)}\n\n"
+
+    except Exception as exc:
+        logger.error(f"RAG streaming generation failed: {exc}")
+        yield f"event: error\ndata: {json.dumps({'error': str(exc)})}\n\n"

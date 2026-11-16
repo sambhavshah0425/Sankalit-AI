@@ -16,7 +16,7 @@ from fastapi import (
     UploadFile,
     status,
 )
-from fastapi.responses import FileResponse
+from fastapi.responses import FileResponse, StreamingResponse
 from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel, Field
 
@@ -30,7 +30,7 @@ from app.config import (
 from app.rag.document_loader import SUPPORTED_EXTENSIONS
 from app.rag.embedder import EMBEDDING_MODEL, EXPECTED_EMBEDDING_DIM
 from app.rag.ingestion import ingest_document
-from app.rag.rag_pipeline import answer_query_async
+from app.rag.rag_pipeline import answer_query_async, answer_query_stream_async
 from app.rag.vector_store import (
     DATABASE_PATH,
     get_database_stats,
@@ -180,7 +180,7 @@ class DocumentPermissionsUpdateRequest(BaseModel):
 
 class RAGQueryRequest(BaseModel):
     query: str = Field(min_length=1, max_length=2000, description="Natural language question to ask company knowledge base")
-    top_k: int = Field(default=10, ge=1, le=20, description="Maximum number of context chunks to retrieve")
+    top_k: int = Field(default=3, ge=1, le=20, description="Maximum number of context chunks to retrieve")
     min_score: float = Field(default=0.25, ge=0.0, le=1.0, description="Minimum cosine similarity threshold")
     detailed: bool = Field(default=False, description="Set to true if full technical retrieval metadata and sources are required")
     domain_id: Optional[int] = None
@@ -1167,6 +1167,60 @@ async def rag_query(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail=f"Query failed: {str(exc)}"
         )
+
+
+@app.post("/rag/query/stream")
+async def rag_query_stream(
+    request: RAGQueryRequest,
+    req: Request,
+    current_user: Dict[str, Any] = Depends(require_permission("rag:query"))
+):
+    """
+    High-performance streaming RAG endpoint via Server-Sent Events (SSE).
+    Streams tokens in real-time as they are produced by Ollama to eliminate perceived UI latency.
+    """
+    ip_addr = get_client_ip(req)
+    allowed_ids = get_authorized_document_ids(current_user)
+
+    log_audit_event(
+        action="RAG_QUERY_STREAM",
+        resource_type="KNOWLEDGE_BASE",
+        actor_id=current_user["id"],
+        actor_username=current_user["username"],
+        details={"query": request.query[:100], "authorized_docs_count": len(allowed_ids)},
+        ip_address=ip_addr,
+        status="SUCCESS"
+    )
+
+    effective_domain_id = request.domain_id if request.domain_id and request.domain_id > 0 else None
+    effective_category_id = request.category_id if request.category_id and request.category_id > 0 else None
+    effective_department_id = request.department_id if request.department_id and request.department_id > 0 else None
+    effective_domain_slug = request.domain_slug.strip() if request.domain_slug and request.domain_slug.strip().lower() != "string" else None
+    effective_project_name = request.project_name.strip() if request.project_name and request.project_name.strip().lower() != "string" else None
+    effective_document_type = request.document_type.strip() if request.document_type and request.document_type.strip().lower() != "string" else None
+
+    stream_generator = answer_query_stream_async(
+        query=request.query,
+        top_k=request.top_k,
+        min_score=request.min_score,
+        allowed_document_ids=allowed_ids,
+        domain_id=effective_domain_id,
+        domain_slug=effective_domain_slug,
+        category_id=effective_category_id,
+        department_id=effective_department_id,
+        project_name=effective_project_name,
+        document_type=effective_document_type
+    )
+
+    return StreamingResponse(
+        stream_generator,
+        media_type="text/event-stream",
+        headers={
+            "Cache-Control": "no-cache",
+            "Connection": "keep-alive",
+            "X-Accel-Buffering": "no"
+        }
+    )
 
 
 @app.get("/rag/stats")

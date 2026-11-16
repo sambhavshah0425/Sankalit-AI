@@ -5,13 +5,15 @@ Enforces untrusted boundary containers, deduplication, and memory/context budget
 from typing import Any, Dict, List, Tuple
 from app.ai.response_policy import UNTRUSTED_CONTENT_DISCLAIMER
 
-# Conservative character budget for local Qwen3:1.7b running with num_ctx: 2048 on CPU
-MAX_CONTEXT_CHARACTERS = 4800
+# Optimized character and chunk budget for local Qwen3:1.7b running on CPU
+MAX_CONTEXT_CHARACTERS = 4200
+MAX_CONTEXT_CHUNKS = 3
 
 
 def build_rag_context(
     retrieved_chunks: List[Dict[str, Any]],
-    max_characters: int = MAX_CONTEXT_CHARACTERS
+    max_characters: int = MAX_CONTEXT_CHARACTERS,
+    max_chunks: int = MAX_CONTEXT_CHUNKS
 ) -> Tuple[str, List[Dict[str, Any]]]:
     """
     Format retrieved chunks into a secure, structured context block:
@@ -33,6 +35,8 @@ def build_rag_context(
             continue
         seen_texts.add(text_norm)
         unique_chunks.append(chunk)
+        if len(unique_chunks) >= max_chunks:
+            break
 
     context_parts: List[str] = [UNTRUSTED_CONTENT_DISCLAIMER, "\n### RETRIEVED COMPANY KNOWLEDGE BASE EVIDENCE:"]
     current_length = sum(len(p) for p in context_parts)

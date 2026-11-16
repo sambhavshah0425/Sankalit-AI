@@ -13,7 +13,7 @@ export interface Message {
   timestamp: string;
   sources?: SourceCitation[];
   detected_domain?: string;
-  retrieval_status?: 'success' | 'insufficient_context' | 'error';
+  retrieval_status?: 'success' | 'insufficient_context' | 'error' | 'generating';
   isError?: boolean;
 }
 
@@ -34,7 +34,7 @@ export interface RAGQueryResponse {
   detected_domain?: string;
   sources?: SourceCitation[];
   citations?: Array<{ filename: string; chunk_index: number }>;
-  retrieval_status?: 'success' | 'insufficient_context' | 'error';
+  retrieval_status?: 'success' | 'insufficient_context' | 'error' | 'generating';
   model?: string;
 }
 
